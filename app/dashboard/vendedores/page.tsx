@@ -12,37 +12,37 @@ export default function VendedoresPage() {
     <div className="px-8 py-10">
       <div className="mb-8 flex items-start justify-between">
         <div>
-          <p className="text-xs font-medium tracking-widest uppercase text-beige-100 mb-1">Equipe</p>
-          <h1 className="font-heading text-4xl text-forest">Vendedores</h1>
-          <p className="text-beige-100 text-sm mt-1">{sellers.length} Social Seller{sellers.length !== 1 ? "s" : ""} configurado{sellers.length !== 1 ? "s" : ""}.</p>
+          <p className="text-xs font-medium tracking-widest uppercase text-beige-100 dark:text-white/40 mb-1">Equipe</p>
+          <h1 className="font-heading text-4xl text-forest dark:text-beige">Vendedores</h1>
+          <p className="text-beige-100 dark:text-white/40 text-sm mt-1">{sellers.length} Social Seller{sellers.length !== 1 ? "s" : ""} configurado{sellers.length !== 1 ? "s" : ""}.</p>
         </div>
-        <Link href="/dashboard/configuracoes" className="text-sm bg-forest text-lime rounded-lg px-4 py-2 hover:bg-moss transition">
+        <Link href="/dashboard/configuracoes" className="text-sm bg-forest dark:bg-lime text-lime dark:text-forest rounded-lg px-4 py-2 hover:bg-moss dark:hover:bg-lime/90 transition">
           + Adicionar
         </Link>
       </div>
 
       {demo && (
-        <div className="bg-beige-25 border border-beige-50 rounded-xl px-5 py-4 mb-6 text-sm text-beige-100">
-          Exibindo dados de exemplo. Configure <code className="font-mono text-forest/70">META_ACCOUNTS</code> para ver os sócios reais.
+        <div className="bg-beige-25 dark:bg-white/5 border border-beige-50 dark:border-white/10 rounded-xl px-5 py-4 mb-6 text-sm text-beige-100 dark:text-white/40">
+          Exibindo dados de exemplo. Configure <code className="font-mono text-forest/70 dark:text-white/60">META_ACCOUNTS</code> para ver os sócios reais.
         </div>
       )}
 
       {/* Table */}
-      <div className="bg-white border border-beige-50 rounded-2xl overflow-hidden">
+      <div className="bg-white dark:bg-forest border border-beige-50 dark:border-white/10 rounded-2xl overflow-hidden">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-beige-50">
-              <th className="text-left px-6 py-4 text-xs font-medium tracking-widest uppercase text-beige-100">Vendedor</th>
-              <th className="text-left px-6 py-4 text-xs font-medium tracking-widest uppercase text-beige-100 hidden md:table-cell">ID da Conta</th>
-              <th className="text-left px-6 py-4 text-xs font-medium tracking-widest uppercase text-beige-100">Status</th>
+            <tr className="border-b border-beige-50 dark:border-white/10">
+              <th className="text-left px-6 py-4 text-xs font-medium tracking-widest uppercase text-beige-100 dark:text-white/40">Vendedor</th>
+              <th className="text-left px-6 py-4 text-xs font-medium tracking-widest uppercase text-beige-100 dark:text-white/40 hidden md:table-cell">ID da Conta</th>
+              <th className="text-left px-6 py-4 text-xs font-medium tracking-widest uppercase text-beige-100 dark:text-white/40">Status</th>
               <th className="px-6 py-4"/>
             </tr>
           </thead>
-          <tbody className="divide-y divide-beige-50">
+          <tbody className="divide-y divide-beige-50 dark:divide-white/10">
             {sellers.map((seller) => {
               const connected = !!seller.accessToken && seller.accessToken !== "mock";
               return (
-                <tr key={seller.igAccountId} className="hover:bg-beige/50 transition-colors">
+                <tr key={seller.igAccountId} className="hover:bg-beige/50 dark:hover:bg-white/5 transition-colors">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
                       <div className="w-9 h-9 rounded-xl bg-forest flex items-center justify-center shrink-0">
@@ -50,10 +50,10 @@ export default function VendedoresPage() {
                           {seller.name.split(" ").map((n) => n[0]).slice(0, 2).join("")}
                         </span>
                       </div>
-                      <span className="font-medium text-forest">{seller.name}</span>
+                      <span className="font-medium text-forest dark:text-beige">{seller.name}</span>
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-beige-100 font-mono text-xs hidden md:table-cell">
+                  <td className="px-6 py-4 text-beige-100 dark:text-white/40 font-mono text-xs hidden md:table-cell">
                     {seller.igAccountId}
                   </td>
                   <td className="px-6 py-4">
@@ -62,19 +62,19 @@ export default function VendedoresPage() {
                         <span className="w-1.5 h-1.5 rounded-full bg-lime inline-block"/>Conectado
                       </span>
                     ) : (
-                      <span className="inline-flex items-center gap-1.5 text-xs font-medium text-beige-100 bg-beige-25 border border-beige-50 rounded-full px-2.5 py-1">
-                        <span className="w-1.5 h-1.5 rounded-full bg-beige-100 inline-block"/>Demo
+                      <span className="inline-flex items-center gap-1.5 text-xs font-medium text-beige-100 dark:text-white/40 bg-beige-25 dark:bg-white/5 border border-beige-50 dark:border-white/10 rounded-full px-2.5 py-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-beige-100 dark:bg-white/30 inline-block"/>Demo
                       </span>
                     )}
                   </td>
                   <td className="px-6 py-4 text-right">
                     <div className="flex items-center justify-end gap-2">
                       <Link href={`/dashboard/relatorio?seller=${seller.igAccountId}`}
-                        className="text-xs bg-forest text-lime rounded-lg px-3 py-1.5 hover:bg-moss transition">
+                        className="text-xs bg-forest dark:bg-lime text-lime dark:text-forest rounded-lg px-3 py-1.5 hover:bg-moss dark:hover:bg-lime/90 transition">
                         Gerar relatório
                       </Link>
                       <Link href={`/dashboard/vendedores/${seller.igAccountId}`}
-                        className="text-xs border border-beige-50 text-forest/60 rounded-lg px-3 py-1.5 hover:border-forest/20 hover:text-forest transition">
+                        className="text-xs border border-beige-50 dark:border-white/10 text-forest/60 dark:text-white/40 rounded-lg px-3 py-1.5 hover:border-forest/20 dark:hover:border-white/20 hover:text-forest dark:hover:text-beige transition">
                         Ver perfil
                       </Link>
                     </div>

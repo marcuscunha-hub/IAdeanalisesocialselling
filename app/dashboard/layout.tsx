@@ -6,7 +6,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const demo = accounts.length === 0 || !accounts.some((a) => a.igAccountId && a.accessToken);
 
   return (
-    <div className="flex h-screen overflow-hidden bg-beige">
+    <div className="flex h-screen overflow-hidden bg-beige dark:bg-[#040f01]">
       <Sidebar demo={demo} />
       <main className="flex-1 overflow-y-auto">
         {children}

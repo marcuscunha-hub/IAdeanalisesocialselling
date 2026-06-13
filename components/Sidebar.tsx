@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { useTheme } from "@/components/ThemeProvider";
 
 const NAV = [
   {
@@ -47,9 +48,30 @@ const SYSTEM_NAV = [
   },
 ];
 
+function SunIcon() {
+  return (
+    <svg width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="5"/>
+      <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+      <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+    </svg>
+  );
+}
+
+function MoonIcon() {
+  return (
+    <svg width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+      <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+    </svg>
+  );
+}
+
 export default function Sidebar({ demo }: { demo: boolean }) {
   const pathname = usePathname();
   const router = useRouter();
+  const { theme, toggle } = useTheme();
 
   async function handleLogout() {
     await fetch("/api/auth/logout", { method: "POST" });
@@ -62,7 +84,7 @@ export default function Sidebar({ demo }: { demo: boolean }) {
   }
 
   return (
-    <aside className="w-56 shrink-0 bg-forest flex flex-col h-screen sticky top-0">
+    <aside className="w-56 shrink-0 bg-forest dark:bg-[#020a01] flex flex-col h-screen sticky top-0">
       {/* Brand */}
       <div className="px-5 pt-6 pb-5 border-b border-white/10">
         <div className="flex items-center gap-2.5">
@@ -125,6 +147,16 @@ export default function Sidebar({ demo }: { demo: boolean }) {
             <p className="text-lime/50 text-[10px] mt-0.5">Configure META_ACCOUNTS</p>
           </div>
         )}
+
+        {/* Theme toggle */}
+        <button
+          onClick={toggle}
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-white/40 hover:text-white/70 hover:bg-white/5 transition-colors text-left"
+        >
+          <span>{theme === "dark" ? <SunIcon /> : <MoonIcon />}</span>
+          {theme === "dark" ? "Modo claro" : "Modo escuro"}
+        </button>
+
         <button
           onClick={handleLogout}
           className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-white/40 hover:text-white/70 hover:bg-white/5 transition-colors text-left"
