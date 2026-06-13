@@ -13,19 +13,59 @@ export type MetaConversation = {
   participants: { id: string; username?: string }[];
 };
 
+export type SellerAccount = {
+  name: string;
+  igAccountId: string;
+  accessToken: string;
+};
+
+export function getSellerAccounts(): SellerAccount[] {
+  const raw = process.env.META_ACCOUNTS;
+  if (!raw) return [];
+  try {
+    return JSON.parse(raw) as SellerAccount[];
+  } catch {
+    return [];
+  }
+}
+
+export function getSellerByAccountId(igAccountId: string): SellerAccount | undefined {
+  return getSellerAccounts().find((a) => a.igAccountId === igAccountId);
+}
+
+async function fetchAllPages<T>(url: string): Promise<T[]> {
+  const results: T[] = [];
+  let nextUrl: string | null = url;
+
+  while (nextUrl) {
+    const res = await fetch(nextUrl);
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      const metaMsg = body?.error?.message ?? res.statusText;
+      throw new Error(`Meta API ${res.status}: ${metaMsg}`);
+    }
+    const data = await res.json();
+    results.push(...(data.data ?? []));
+    nextUrl = data.paging?.next ?? null;
+  }
+
+  return results;
+}
+
 export async function getConversations(
   igAccountId: string,
   accessToken: string,
   since: Date
 ): Promise<MetaConversation[]> {
   const sinceTs = Math.floor(since.getTime() / 1000);
+  const url =
+    `${META_BASE}/${igAccountId}/conversations` +
+    `?platform=instagram` +
+    `&since=${sinceTs}` +
+    `&fields=id,participants,messages{id,message,from,created_time}` +
+    `&access_token=${accessToken}`;
 
-  const url = `${META_BASE}/${igAccountId}/conversations?platform=instagram&since=${sinceTs}&fields=id,participants,messages{id,message,from,created_time}&access_token=${accessToken}`;
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`Meta API error: ${res.status}`);
-
-  const data = await res.json();
-  return (data.data ?? []) as MetaConversation[];
+  return fetchAllPages<MetaConversation>(url);
 }
 
 export function periodToDays(period: string): number {

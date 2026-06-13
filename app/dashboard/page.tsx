@@ -1,5 +1,7 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+type Seller = { name: string; igAccountId: string };
 
 type Report = {
   seller: string;
@@ -17,21 +19,43 @@ type Report = {
 };
 
 export default function Dashboard() {
+  const [sellers, setSellers] = useState<Seller[]>([]);
+  const [igAccountId, setIgAccountId] = useState("");
+  const [period, setPeriod] = useState("7d");
   const [loading, setLoading] = useState(false);
   const [report, setReport] = useState<Report | null>(null);
-  const [seller, setSeller] = useState("");
-  const [period, setPeriod] = useState("7d");
+  const [error, setError] = useState<string | null>(null);
+  const [demo, setDemo] = useState(false);
+
+  useEffect(() => {
+    fetch("/api/sellers")
+      .then((r) => r.json())
+      .then((data) => {
+        setSellers(data.sellers ?? []);
+        setDemo(data.demo ?? false);
+        if (data.sellers?.length > 0) setIgAccountId(data.sellers[0].igAccountId);
+      })
+      .catch(() => {});
+  }, []);
 
   async function generateReport() {
     setLoading(true);
+    setError(null);
+    setReport(null);
     try {
       const res = await fetch("/api/analyze", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ seller, period }),
+        body: JSON.stringify({ igAccountId, period }),
       });
       const data = await res.json();
-      setReport(data.report);
+      if (!res.ok) {
+        setError(data.error ?? "Erro desconhecido");
+      } else {
+        setReport(data.report);
+      }
+    } catch {
+      setError("Falha na conexão com o servidor");
     } finally {
       setLoading(false);
     }
@@ -41,14 +65,28 @@ export default function Dashboard() {
     <div className="max-w-4xl mx-auto p-8">
       <h1 className="text-2xl font-bold mb-8">Dashboard de Performance</h1>
 
+      {demo && (
+        <div className="bg-yellow-900/30 border border-yellow-700 rounded-lg px-5 py-3 mb-6 text-yellow-300 text-sm">
+          Modo demo — dados simulados. Configure <code className="font-mono">META_ACCOUNTS</code> no <code className="font-mono">.env.local</code> para usar dados reais.
+        </div>
+      )}
+
       {/* Filtros */}
       <div className="flex gap-4 mb-8">
-        <input
+        <select
           className="bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 flex-1"
-          placeholder="Vendedor (Instagram username)"
-          value={seller}
-          onChange={(e) => setSeller(e.target.value)}
-        />
+          value={igAccountId}
+          onChange={(e) => setIgAccountId(e.target.value)}
+          disabled={sellers.length === 0}
+        >
+          {sellers.length === 0 && <option value="">Nenhum sócio configurado</option>}
+          {sellers.map((s) => (
+            <option key={s.igAccountId} value={s.igAccountId}>
+              {s.name}
+            </option>
+          ))}
+        </select>
+
         <select
           className="bg-gray-800 border border-gray-700 rounded-lg px-4 py-2"
           value={period}
@@ -58,14 +96,22 @@ export default function Dashboard() {
           <option value="14d">Últimos 14 dias</option>
           <option value="30d">Últimos 30 dias</option>
         </select>
+
         <button
           onClick={generateReport}
-          disabled={!seller || loading}
+          disabled={!igAccountId || loading}
           className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 px-6 py-2 rounded-lg font-medium transition"
         >
           {loading ? "Analisando..." : "Gerar Relatório"}
         </button>
       </div>
+
+      {/* Erro */}
+      {error && (
+        <div className="bg-red-900/40 border border-red-700 rounded-lg px-5 py-4 mb-6 text-red-300 text-sm">
+          {error}
+        </div>
+      )}
 
       {/* Relatório */}
       {report && (
@@ -91,7 +137,15 @@ export default function Dashboard() {
                   <p className="font-medium capitalize">
                     {key === "followUp" ? "Follow-up" : key}
                   </p>
-                  <span className={`text-lg font-bold ${stage.score >= 70 ? "text-green-400" : stage.score >= 50 ? "text-yellow-400" : "text-red-400"}`}>
+                  <span
+                    className={`text-lg font-bold ${
+                      stage.score >= 70
+                        ? "text-green-400"
+                        : stage.score >= 50
+                        ? "text-yellow-400"
+                        : "text-red-400"
+                    }`}
+                  >
                     {stage.score}/100
                   </span>
                 </div>
@@ -107,7 +161,7 @@ export default function Dashboard() {
               <ul className="space-y-2">
                 {report.highlights.map((h, i) => (
                   <li key={i} className="text-gray-300 text-sm flex gap-2">
-                    <span>✓</span> {h}
+                    <span>+</span> {h}
                   </li>
                 ))}
               </ul>
