@@ -38,7 +38,7 @@ async function fetchAllPages<T>(url: string): Promise<T[]> {
   let nextUrl: string | null = url;
 
   while (nextUrl) {
-    const res = await fetch(nextUrl);
+    const res: Response = await fetch(nextUrl);
     if (!res.ok) {
       const body = await res.json().catch(() => ({}));
       const metaMsg = body?.error?.message ?? res.statusText;
