@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { db, conversations } from "@/lib/db/client";
 import { desc } from "drizzle-orm";
 import PipelineBoard from "./PipelineBoard";

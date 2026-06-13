@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { db, alerts, conversations } from "@/lib/db/client";
 import { eq, desc } from "drizzle-orm";
 import Link from "next/link";
