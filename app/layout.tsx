@@ -2,14 +2,14 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Social Selling AI",
-  description: "Análise de performance de Social Selling por IA",
+  title: "Social Selling AI — Full Sales System",
+  description: "Análise de performance de Social Sellers com IA",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="pt-BR">
-      <body className="bg-gray-950 text-white min-h-screen">{children}</body>
+      <body>{children}</body>
     </html>
   );
 }
