@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useTheme } from "@/components/ThemeProvider";
+import AlertsBadge from "@/components/AlertsBadge";
 
 const NAV = [
   {
@@ -11,6 +12,34 @@ const NAV = [
       <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
         <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
         <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+      </svg>
+    ),
+  },
+  {
+    label: "Conversas",
+    href: "/dashboard/conversas",
+    badge: true,
+    icon: (
+      <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+        <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+      </svg>
+    ),
+  },
+  {
+    label: "Pipeline",
+    href: "/dashboard/pipeline",
+    icon: (
+      <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+        <rect x="3" y="3" width="4" height="18" rx="1"/><rect x="10" y="8" width="4" height="13" rx="1"/><rect x="17" y="5" width="4" height="16" rx="1"/>
+      </svg>
+    ),
+  },
+  {
+    label: "Alertas",
+    href: "/dashboard/alertas",
+    icon: (
+      <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+        <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/>
       </svg>
     ),
   },
@@ -114,6 +143,7 @@ export default function Sidebar({ demo }: { demo: boolean }) {
               {item.icon}
             </span>
             {item.label}
+            {item.badge && <AlertsBadge />}
           </Link>
         ))}
 
@@ -147,8 +177,6 @@ export default function Sidebar({ demo }: { demo: boolean }) {
             <p className="text-lime/50 text-[10px] mt-0.5">Configure META_ACCOUNTS</p>
           </div>
         )}
-
-        {/* Theme toggle */}
         <button
           onClick={toggle}
           className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-white/40 hover:text-white/70 hover:bg-white/5 transition-colors text-left"
@@ -156,7 +184,6 @@ export default function Sidebar({ demo }: { demo: boolean }) {
           <span>{theme === "dark" ? <SunIcon /> : <MoonIcon />}</span>
           {theme === "dark" ? "Modo claro" : "Modo escuro"}
         </button>
-
         <button
           onClick={handleLogout}
           className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-white/40 hover:text-white/70 hover:bg-white/5 transition-colors text-left"

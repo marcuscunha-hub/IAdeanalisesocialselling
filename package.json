@@ -6,13 +6,17 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.24.3",
     "@google/genai": "^2.8.0",
     "@google/generative-ai": "^0.24.1",
     "@vercel/postgres": "^0.9.0",
+    "drizzle-kit": "^0.31.10",
+    "drizzle-orm": "^0.45.2",
     "next": "14.2.5",
     "react": "^18",
     "react-dom": "^18"
