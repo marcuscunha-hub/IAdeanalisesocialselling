@@ -3,6 +3,7 @@ import { db, conversations } from "@/lib/db/client";
 import { desc, gt } from "drizzle-orm";
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 export const maxDuration = 25;
 
 export async function GET(req: NextRequest) {
