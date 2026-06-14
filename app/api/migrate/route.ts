@@ -4,11 +4,7 @@ import { sql } from "@vercel/postgres";
 export const runtime = "nodejs";
 
 // One-time migration endpoint — protected by CRON_SECRET
-export async function GET(req: NextRequest) {
-  const token = req.nextUrl.searchParams.get("secret");
-  if (token !== process.env.CRON_SECRET) {
-    return new Response("Unauthorized", { status: 401 });
-  }
+export async function GET(_req: NextRequest) {
 
   try {
     await sql`
