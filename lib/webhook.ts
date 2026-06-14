@@ -34,8 +34,9 @@ export function verifyMetaSignature(rawBody: string, signature: string): boolean
     .createHmac("sha256", appSecret)
     .update(rawBody)
     .digest("hex");
-  console.log("[webhook] signature recebida:", signature.slice(0, 20));
-  console.log("[webhook] signature esperada:", expected.slice(0, 20));
+  console.log("[webhook] app_secret prefix:", appSecret.slice(0, 8));
+  console.log("[webhook] sig recebida:", signature.slice(0, 40));
+  console.log("[webhook] sig esperada:", expected.slice(0, 40));
   try {
     const sigBuf = Buffer.from(signature);
     const expBuf = Buffer.from(expected);
