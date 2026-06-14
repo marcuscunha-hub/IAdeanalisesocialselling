@@ -26,12 +26,28 @@ export type MetaWebhookPayload = {
 
 export function verifyMetaSignature(rawBody: string, signature: string): boolean {
   const appSecret = process.env.META_APP_SECRET;
-  if (!appSecret) return false;
+  if (!appSecret || !signature) {
+    console.error("[webhook] META_APP_SECRET ausente ou signature vazia");
+    return false;
+  }
   const expected = "sha256=" + crypto
     .createHmac("sha256", appSecret)
     .update(rawBody)
     .digest("hex");
-  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
+  console.log("[webhook] signature recebida:", signature.slice(0, 20));
+  console.log("[webhook] signature esperada:", expected.slice(0, 20));
+  try {
+    const sigBuf = Buffer.from(signature);
+    const expBuf = Buffer.from(expected);
+    if (sigBuf.length !== expBuf.length) {
+      console.error("[webhook] tamanhos diferentes:", sigBuf.length, expBuf.length);
+      return false;
+    }
+    return crypto.timingSafeEqual(sigBuf, expBuf);
+  } catch (e) {
+    console.error("[webhook] erro na verificação:", e);
+    return false;
+  }
 }
 
 export function extractMessages(payload: MetaWebhookPayload, sellerIgAccountId: string) {
